@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO-GREEN - Learn, Act, Impact</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🌱 ECO-GREEN
+            </div>
+            <ul class="nav-links">
+                <li><a href="#dashboard" onclick="scrollToSection('dashboard')">Dashboard</a></li>
+                <li><a href="#games" onclick="scrollToSection('games')">Games</a></li>
+                <li><a href="#challenges" onclick="scrollToSection('challenges')">Challenges</a></li>
+                <li><a href="#leaderboard" onclick="scrollToSection('leaderboard')">Leaderboard</a></li>
+                <li><a href="#resources" onclick="showResources()">Resources</a></li>
+            </ul>
+            <div class="user-stats">
+                <span>🌟 <span id="userPoints">1250</span> Pts</span>
+                <span>🔥 <span id="streak">7</span> Day Streak</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero" id="dashboard">
+            <h1>Welcome Back, Eco Champion! 🌍</h1>
+            <p>Your journey to save the planet continues. Complete challenges, earn points, and make a real impact!</p>
+            <button class="btn btn-primary" onclick="scrollToSection('games')">Play Eco Games</button>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Personal Impact Card -->
+            <div class="card" onclick="showImpactDetails()">
+                <div class="card-header">
+                    <span class="card-title">Your Impact</span>
+                    <div class="card-icon">🌳</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Trees Planted</span>
+                        <span>12/20</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>CO₂ Saved</span>
+                        <span>45 kg</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem; color: #7f8c8d; font-size: 0.9rem;">
+                    You've saved enough CO₂ to offset 2 weeks of car travel!
+                </p>
+            </div>
+
+            <!-- School Ranking Card -->
+            <div class="card" onclick="showSchoolDetails()">
+                <div class="card-header">
+                    <span class="card-title">School Ranking</span>
+                    <div class="card-icon">🏆</div>
+                </div>
+                <h2 style="font-size: 2rem; color: var(--primary-green); margin: 1rem 0;">#3</h2>
+                <p style="color: #7f8c8d;">Delhi Public School, Bangalore</p>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>School Points</span>
+                        <span>8,450/10,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 84.5%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Badges Card -->
+            <div class="card" onclick="showAchievements()" onclick="showBadges()">
+                <div class="card-header">
+                    <span class="card-title">Badges</span>
+                    <div class="card-icon">🏅</div>
+                </div>
+                <div class="badges-grid">
+                    <div class="badge-item earned" title="Complete 100 correct waste-sorting actions">
+                        <div class="badge-emoji">♻️</div>
+                        <small>Recycle Hero</small>
+                    </div>
+                    <div class="badge-item earned" title="7 days of continuous eco-actions">
+                        <div class="badge-emoji">🌱</div>
+                        <small>Green Streak</small>
+                    </div>
+                    <div class="badge-item locked" title="Reduce daily water usage">
+                        <div class="badge-emoji">💧</div>
+                        <small>Water Saver</small>
+                    </div>
+                    <div class="badge-item locked" title="Plant trees in real world projects">
+                        <div class="badge-emoji">🌳</div>
+                        <small>Tree Trooper</small>
+                    </div>
+                    <div class="badge-item locked" title="Save electricity by reducing usage">
+                        <div class="badge-emoji">⚡</div>
+                        <small>Energy Ninja</small>
+                    </div>
+                    <div class="badge-item locked" title="Consistent recycling habits">
+                        <div class="badge-emoji">♻️</div>
+                        <small>Recycling Master</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eco Games Section -->
+        <div class="games-section" id="games">
+            <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 1rem;">🎮 Eco Mini Games</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 2rem;">
+                Learn environmental concepts through fun, interactive games and earn points for your school!
+            </p>
+            
+            <div class="games-grid">
+                <div class="game-card" onclick="openGameModal('recycle-rush')">
+                    <div class="game-icon">🗂️</div>
+                    <div class="game-title">Recycle Rush</div>
+                    <div class="game-description">Sort waste into correct bins as fast as you can! Test your recycling knowledge and help save the planet.</div>
+                    <div class="game-points">+75 Points</div>
+                    <div class="game-features">⏱️ 2 minutes • 🎯 Sorting challenge</div>
+                </div>
+
+                <div class="game-card" onclick="openGameModal('water-saver')">
+                    <div class="game-icon">💧</div>
+                    <div class="game-title">Water Saver Puzzle</div>
+                    <div class="game-description">Fix leaks and save water in different scenarios. Learn water conservation through interactive puzzles.</div>
+                    <div class="game-points">+60 Points</div>
+                    <div class="game-features">🧩 Puzzle solving • 💡 Conservation tips</div>
+                </div>
+
+                <div class="game-card" onclick="openGameModal('carbon-crusher')">
+                    <div class="game-icon">⚡</div>
+                    <div class="game-title">Carbon Crusher</div>
+                    <div class="game-description">Identify eco-friendly vs harmful activities. Make decisions to reduce your carbon footprint.</div>
+                    <div class="game-points">+80 Points</div>
+                    <div class="game-features">🌍 Decision making • 🎲 Carbon awareness</div>
+                </div>
+
+                <div class="game-card" onclick="openGameModal('edunova-quiz')">
+                    <div class="game-icon">🧠</div>
+                    <div class="game-title">EduNova Quiz</div>
+                    <div class="game-description">Advanced environmental knowledge challenge. Test your understanding of ecology and climate science.</div>
+                    <div class="game-points">+90 Points</div>
+                    <div class="game-features">📚 Knowledge test • 🏆 Multiple levels</div>
+                </div>
+
+                <div class="game-card" onclick="openGameModal('biodiversity-defender')">
+                    <div class="game-icon">🦋</div>
+                    <div class="game-title">Biodiversity Defender</div>
+                    <div class="game-description">Match animals and plants to their correct habitats. Learn about ecosystems and endangered species.</div>
+                    <div class="game-points">+70 Points</div>
+                    <div class="game-features">🌿 Ecosystem learning • 🎯 Matching game</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Challenges -->
+        <div class="challenges-container" id="challenges">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-dark);">🎯 Daily Challenges</h2>
+            
+            <div class="challenge-item">
+                <div class="challenge-icon">📸</div>
+                <div class="challenge-details">
+                    <div class="challenge-title">Photo Challenge: Capture Waste Segregation</div>
+                    <div class="challenge-reward">+50 Points | Deadline: 6 hours</div>
+                </div>
+                <button class="challenge-status status-active" onclick="uploadPhoto()">Upload</button>
+            </div>
+
+            <div class="challenge-item">
+                <div class="challenge-icon">🧠</div>
+                <div class="challenge-details">
+                    <div class="challenge-title">Quiz: Climate Change Basics</div>
+                    <div class="challenge-reward">+30 Points | 10 Questions</div>
+                </div>
+                <button class="challenge-status status-active" onclick="startQuiz()">Start Quiz</button>
+            </div>
+
+            <div class="challenge-item">
+                <div class="challenge-icon">🚶</div>
+                <div class="challenge-details">
+                    <div class="challenge-title">Walk 5000 Steps Today</div>
+                    <div class="challenge-reward">+25 Points | Progress: 3,200/5,000</div>
+                </div>
+                <button class="challenge-status status-active">Track</button>
+            </div>
+
+            <div class="challenge-item">
+                <div class="challenge-icon">✅</div>
+                <div class="challenge-details">
+                    <div class="challenge-title">Turn Off Lights Challenge</div>
+                    <div class="challenge-reward">+15 Points | Completed!</div>
+                </div>
+                <button class="challenge-status status-completed">✓ Done</button>
+            </div>
+        </div>
+
+        <!-- Real-World Eco Tasks -->
+        <div class="eco-tasks">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-dark);">🌿 Real-World Eco Tasks</h2>
+            
+            <div class="task-card">
+                <div class="task-info">
+                    <h3>Community Clean-Up Drive</h3>
+                    <p style="color: #7f8c8d; margin: 0.5rem 0;">Join your local community this Saturday for beach cleaning</p>
+                    <small style="color: var(--secondary-blue);">📍 Juhu Beach, Mumbai | 📅 Saturday, 9 AM</small>
+                </div>
+                <div class="task-points">+200 Pts</div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h3>Plant a Tree Campaign</h3>
+                    <p style="color: #7f8c8d; margin: 0.5rem 0;">Register for tree plantation drive in your school</p>
+                    <small style="color: var(--secondary-blue);">📍 School Campus | 📅 Next Monday</small>
+                </div>
+                <div class="task-points">+150 Pts</div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h3>Home Energy Audit</h3>
+                    <p style="color: #7f8c8d; margin: 0.5rem 0;">Conduct an energy audit of your home and submit report</p>
+                    <small style="color: var(--secondary-blue);">📱 Use our mobile app to scan and track</small>
+                </div>
+                <div class="task-points">+100 Pts</div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard" id="leaderboard">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text-dark);">🏆 School Leaderboard</h2>
+            
+            <div class="leaderboard-item">
+                <div class="rank gold">1</div>
+                <span class="school-name">St. Xavier's School, Mumbai</span>
+                <span class="school-points">12,450 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank silver">2</div>
+                <span class="school-name">Modern School, Delhi</span>
+                <span class="school-points">11,200 pts</span>
+            </div>
+
+            <div class="leaderboard-item" style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);">
+                <div class="rank bronze">3</div>
+                <span class="school-name">Delhi Public School, Bangalore (You)</span>
+                <span class="school-points">8,450 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">4</div>
+                <span class="school-name">Ryan International, Pune</span>
+                <span class="school-points">7,800 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">5</div>
+                <span class="school-name">Cambridge School, Kolkata</span>
+                <span class="school-points">6,500 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">6</div>
+                <span class="school-name">Kendriya Vidyalaya, Chennai</span>
+                <span class="school-points">5,920 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">7</div>
+                <span class="school-name">DAV Public School, Hyderabad</span>
+                <span class="school-points">5,340 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">8</div>
+                <span class="school-name">Bishop Cotton School, Shimla</span>
+                <span class="school-points">4,780 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">9</div>
+                <span class="school-name">Loyola High School, Chennai</span>
+                <span class="school-points">4,210 pts</span>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">10</div>
+                <span class="school-name">St. Paul's School, Darjeeling</span>
+                <span class="school-points">3,650 pts</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <h2 id="gameTitle" style="margin-bottom: 1rem; color: var(--text-dark); text-align: center;">Game Title</h2>
+            <div id="gameInterface" class="game-interface">
+                <div style="font-size: 4rem; margin-bottom: 2rem;">🎮</div>
+                <h3>Select a game to play!</h3>
+                <p style="color: #7f8c8d; margin-top: 1rem;">Choose from our collection of educational eco-games.</p>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="closeGameModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab" onclick="showEcoTips()">💡</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
