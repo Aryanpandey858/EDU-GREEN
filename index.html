@@ -7,6 +7,196 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="authTitle">Login to EDU-GREEN</h2>
+            <div id="authForm">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchToRegister()">Register Instead</button>
+                </form>
+                
+                <form id="registerForm" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="regFirstName">First Name:</label>
+                            <input type="text" id="regFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regLastName">Last Name:</label>
+                            <input type="text" id="regLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regEmail">Email Address:</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPhone">Phone Number:</label>
+                        <input type="tel" id="regPhone" placeholder="+91 98765 43210" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPassword">Password:</label>
+                        <input type="password" id="regPassword" minlength="6" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirm Password:</label>
+                        <input type="password" id="regConfirmPassword" required>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="regDateOfBirth">Date of Birth:</label>
+                            <input type="date" id="regDateOfBirth" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regGrade">Grade/Class:</label>
+                            <select id="regGrade" required>
+                                <option value="">Select Grade</option>
+                                <option value="6">6th Grade</option>
+                                <option value="7">7th Grade</option>
+                                <option value="8">8th Grade</option>
+                                <option value="9">9th Grade</option>
+                                <option value="10">10th Grade</option>
+                                <option value="11">11th Grade</option>
+                                <option value="12">12th Grade</option>
+                                <option value="undergraduate">Undergraduate</option>
+                                <option value="postgraduate">Postgraduate</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regInstitutionType">Institution Type:</label>
+                        <select id="regInstitutionType" required onchange="updateInstitutionLabel()">
+                            <option value="">Select Type</option>
+                            <option value="school">School</option>
+                            <option value="college">College</option>
+                            <option value="university">University</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regInstitution" id="institutionLabel">School/College Name:</label>
+                        <input type="text" id="regInstitution" placeholder="Enter your institution name" required>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="regStudentId">Student ID:</label>
+                            <input type="text" id="regStudentId" placeholder="e.g., 2024ECO001" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regRollNumber">Roll Number:</label>
+                            <input type="text" id="regRollNumber" placeholder="e.g., 12A001">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="regCity">City:</label>
+                            <input type="text" id="regCity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regState">State:</label>
+                            <select id="regState" required>
+                                <option value="">Select State</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regInterests">Environmental Interests (Optional):</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="renewable-energy"> Renewable Energy
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="wildlife-conservation"> Wildlife Conservation
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="waste-management"> Waste Management
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="climate-change"> Climate Change
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="sustainable-living"> Sustainable Living
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" value="green-technology"> Green Technology
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" id="regTerms" required>
+                            I agree to the <a href="#" style="color: var(--primary-green);">Terms & Conditions</a> and <a href="#" style="color: var(--primary-green);">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" id="regNewsletter">
+                            Send me eco-tips and updates via email
+                        </label>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">Create Account</button>
+                        <button type="button" class="btn btn-secondary" onclick="switchToLogin()" style="width: 100%;">Already have an account? Login</button>
+                    </div>
+                </form>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-secondary" onclick="continueAsGuest()">Continue as Guest</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
@@ -23,6 +213,13 @@
             <div class="user-stats">
                 <span>🌟 <span id="userPoints">1250</span> Pts</span>
                 <span>🔥 <span id="streak">7</span> Day Streak</span>
+                <div id="authButtons" style="margin-left: 1rem;">
+                    <button class="btn btn-small" onclick="showLoginModal()" id="loginBtn">Login</button>
+                </div>
+                <div id="userInfo" style="margin-left: 1rem; display: none;">
+                    <span id="username">Guest</span>
+                    <button class="btn btn-small" onclick="logout()" id="logoutBtn">Logout</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -87,7 +284,7 @@
             </div>
 
             <!-- Badges Card -->
-            <div class="card" onclick="showAchievements()" onclick="showBadges()">
+            <div class="card" onclick="showAchievements()">
                 <div class="card-header">
                     <span class="card-title">Badges</span>
                     <div class="card-icon">🏅</div>
@@ -190,10 +387,10 @@
                     <div class="challenge-title">Quiz: Climate Change Basics</div>
                     <div class="challenge-reward">+30 Points | 10 Questions</div>
                 </div>
-                <button class="challenge-status status-active" onclick="startQuiz()">Start Quiz</button>
+                <button class="challenge-status status-active" onclick="openQuickQuiz()">Start Quiz</button>
             </div>
 
-           <div class="challenge-item">
+            <div class="challenge-item">
                 <div class="challenge-icon">🗑️</div>
                 <div class="challenge-details">
                     <div class="challenge-title">Make a compost for household food scraps</div>
@@ -313,6 +510,7 @@
     <!-- Game Modal -->
     <div id="gameModal" class="modal">
         <div class="modal-content">
+            <span class="close" onclick="closeGameModal()">&times;</span>
             <h2 id="gameTitle" style="margin-bottom: 1rem; color: var(--text-dark); text-align: center;">Game Title</h2>
             <div id="gameInterface" class="game-interface">
                 <div style="font-size: 4rem; margin-bottom: 2rem;">🎮</div>
@@ -330,6 +528,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
-
