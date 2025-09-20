@@ -1,4 +1,4 @@
-/* ECO-GREEN Styles */
+/* EDU-GREEN Styles */
 
 * {
     margin: 0;
@@ -78,6 +78,176 @@ nav {
     padding: 0.5rem 1rem;
     border-radius: 25px;
     color: white;
+}
+
+/* Login/Auth Styles */
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background: white;
+    color: var(--primary-green);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-small:hover {
+    background: var(--bg-light);
+    transform: scale(1.05);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--bg-light);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+.form-group input:invalid {
+    border-color: var(--danger-red);
+}
+
+.form-group input:valid {
+    border-color: var(--primary-green);
+}
+
+/* Enhanced modal for larger registration form */
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s;
+    position: relative;
+}
+
+/* Grid layout for form fields */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+    width: auto !important;
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+    accent-color: var(--primary-green);
+}
+
+/* Enhanced button styles */
+.btn {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+}
+
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background: var(--secondary-blue);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Form validation styling */
+.form-group input:required:invalid {
+    box-shadow: none;
+}
+
+.form-group input:required:valid {
+    border-color: var(--primary-green);
+}
+
+/* Responsive design for registration form */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+        max-height: 95vh;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Loading states */
+.form-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.form-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--primary-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 /* Main Container */
@@ -287,6 +457,214 @@ nav {
     color: var(--secondary-blue);
 }
 
+/* Game Interface Styles */
+.game-interface {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.quiz-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.question {
+    margin-bottom: 2rem;
+}
+
+.question h3 {
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.option {
+    padding: 1rem;
+    background: var(--bg-light);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.option:hover {
+    background: #dfe6e9;
+}
+
+.option.selected {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--dark-green);
+}
+
+.option.correct {
+    background: var(--primary-green);
+    color: white;
+}
+
+.option.incorrect {
+    background: var(--danger-red);
+    color: white;
+}
+
+.quiz-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 10px;
+}
+
+.quiz-score {
+    font-weight: bold;
+    color: var(--primary-green);
+}
+
+.waste-item {
+    display: inline-block;
+    margin: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border: 2px solid var(--bg-light);
+    border-radius: 10px;
+    cursor: grab;
+    transition: all 0.3s;
+    user-select: none;
+}
+
+.waste-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.waste-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.bin {
+    width: 120px;
+    height: 120px;
+    border: 3px dashed #ccc;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.bin.plastic { border-color: #3498db; background: #3498db20; }
+.bin.paper { border-color: #2ecc71; background: #2ecc7120; }
+.bin.glass { border-color: #f39c12; background: #f39c1220; }
+.bin.organic { border-color: #27ae60; background: #27ae6020; }
+
+.bin.drag-over {
+    border-style: solid;
+    transform: scale(1.1);
+}
+
+.bin-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.game-timer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--accent-orange);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    background: var(--bg-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.memory-card.flipped {
+    background: var(--primary-green);
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched {
+    background: var(--secondary-blue);
+    color: white;
+    cursor: default;
+}
+
+.carbon-choice {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin: 0.5rem;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.carbon-choice:hover {
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.carbon-choice.selected {
+    border-color: var(--primary-green);
+    background: var(--primary-green);
+    color: white;
+}
+
+.carbon-choice.high-carbon {
+    border-left: 4px solid var(--danger-red);
+}
+
+.carbon-choice.low-carbon {
+    border-left: 4px solid var(--primary-green);
+}
+
+.choice-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
 /* Challenges Section */
 .challenges-container {
     background: white;
@@ -474,27 +852,6 @@ nav {
     opacity: 0.6;
 }
 
-/* Badge Progress Indicators */
-.badge-progress {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    background: var(--accent-orange);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: white;
-}
-
-.badge-item.earned .badge-progress {
-    background: var(--primary-green);
-}
-
 /* Eco Tasks */
 .eco-tasks {
     background: white;
@@ -610,6 +967,7 @@ nav {
     max-height: 80vh;
     overflow-y: auto;
     animation: slideUp 0.3s;
+    position: relative;
 }
 
 @keyframes slideUp {
@@ -617,13 +975,18 @@ nav {
     to { transform: translateY(0); opacity: 1; }
 }
 
-.game-interface {
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: var(--danger-red);
 }
 
 /* Mobile Responsive */
@@ -664,6 +1027,19 @@ nav {
     .user-stats {
         font-size: 0.9rem;
         gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .options {
+        grid-template-columns: 1fr;
+    }
+
+    .memory-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .bins-container {
+        flex-wrap: wrap;
     }
 }
 
@@ -750,31 +1126,58 @@ nav {
     to { transform: rotate(360deg); }
 }
 
-/* Additional Animations */
-@keyframes badgePopup {
-    0% { transform: translate(-50%, -50%) scale(0); }
-    50% { transform: translate(-50%, -50%) scale(1.1); }
-    100% { transform: translate(-50%, -50%) scale(1); }
+/* Additional Game Styles */
+.bins-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
 }
 
-/* Utility Classes */
-.text-center {
+.items-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+    min-height: 100px;
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 15px;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 10px;
+}
+
+.stat-item {
     text-align: center;
 }
 
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-green);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
 .mb-1 { margin-bottom: 1rem; }
 .mb-2 { margin-bottom: 2rem; }
 .mt-1 { margin-top: 1rem; }
 .mt-2 { margin-top: 2rem; }
-
-.hidden {
-    display: none;
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
-.slide-up {
-    animation: slideUp 0.5s ease-out;
-}
+.hidden { display: none; }
+.fade-in { animation: fadeIn 0.5s ease-in; }
+.slide-up { animation: slideUp 0.5s ease-out; }
