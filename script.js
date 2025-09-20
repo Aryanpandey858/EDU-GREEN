@@ -1,14 +1,114 @@
-// ECO-GREEN JavaScript
+// EDU-GREEN Complete Working JavaScript - Enhanced with Functional Games and Login System
 
-// API Configuration
+// Configuration and Global Variables
 const API_BASE = 'http://localhost:5000/api';
-let authToken = localStorage.getItem('token');
-
-// Initialize data
+let authToken = null;
+let currentUser = null;
+let isGuest = true;
+let currentGame = null;
+let gameState = {};
 let userPoints = 1250;
 let streak = 7;
 
-// Eco tips database
+// Game Data Arrays
+const quizQuestions = [
+    {
+        question: "What percentage of Earth's freshwater is frozen in ice caps and glaciers?",
+        options: ["50%", "68%", "25%", "90%"],
+        correct: 1,
+        explanation: "About 68% of Earth's freshwater is frozen in ice caps and glaciers."
+    },
+    {
+        question: "Which gas is the primary contributor to global warming?",
+        options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+        correct: 1,
+        explanation: "Carbon dioxide (CO₂) is the primary greenhouse gas driving global warming."
+    },
+    {
+        question: "How long does it take for a plastic bottle to decompose naturally?",
+        options: ["10 years", "50 years", "100 years", "450+ years"],
+        correct: 3,
+        explanation: "Plastic bottles can take 450 years or more to decompose completely."
+    },
+    {
+        question: "What is the most effective way to reduce your carbon footprint?",
+        options: ["Recycling", "Using LED bulbs", "Reducing meat consumption", "Taking shorter showers"],
+        correct: 2,
+        explanation: "Reducing meat consumption, especially beef, has the largest impact on reducing carbon footprint."
+    },
+    {
+        question: "Which renewable energy source produces the most electricity globally?",
+        options: ["Solar", "Wind", "Hydroelectric", "Geothermal"],
+        correct: 2,
+        explanation: "Hydroelectric power is currently the largest source of renewable electricity worldwide."
+    },
+    {
+        question: "What percentage of waste can typically be recycled or composted?",
+        options: ["30%", "50%", "75%", "90%"],
+        correct: 2,
+        explanation: "Approximately 75% of waste can be recycled or composted with proper sorting."
+    },
+    {
+        question: "Which ecosystem absorbs the most carbon dioxide?",
+        options: ["Rainforests", "Oceans", "Grasslands", "Deserts"],
+        correct: 1,
+        explanation: "Oceans absorb about 30% of all CO₂ released into the atmosphere."
+    },
+    {
+        question: "How much water does the average person use per day globally?",
+        options: ["20 liters", "50 liters", "150 liters", "300 liters"],
+        correct: 2,
+        explanation: "The average person uses about 150 liters of water per day globally."
+    },
+    {
+        question: "What is the main cause of deforestation worldwide?",
+        options: ["Logging", "Agriculture", "Urban development", "Mining"],
+        correct: 1,
+        explanation: "Agriculture is responsible for about 80% of global deforestation."
+    },
+    {
+        question: "Which transportation method has the lowest carbon emissions per passenger?",
+        options: ["Car", "Bus", "Train", "Airplane"],
+        correct: 2,
+        explanation: "Trains generally have the lowest carbon emissions per passenger kilometer."
+    }
+];
+
+const wasteItems = [
+    { name: "Plastic Bottle", type: "plastic", emoji: "🍶" },
+    { name: "Newspaper", type: "paper", emoji: "📰" },
+    { name: "Glass Jar", type: "glass", emoji: "🫙" },
+    { name: "Apple Core", type: "organic", emoji: "🍎" },
+    { name: "Cardboard Box", type: "paper", emoji: "📦" },
+    { name: "Soda Can", type: "plastic", emoji: "🥤" },
+    { name: "Wine Bottle", type: "glass", emoji: "🍷" },
+    { name: "Banana Peel", type: "organic", emoji: "🍌" },
+    { name: "Plastic Bag", type: "plastic", emoji: "🛍️" },
+    { name: "Magazine", type: "paper", emoji: "📖" }
+];
+
+const carbonChoices = [
+    { activity: "Walking to work", impact: "low", emoji: "🚶", footprint: 0 },
+    { activity: "Driving a car", impact: "high", emoji: "🚗", footprint: 8 },
+    { activity: "Taking public transport", impact: "low", emoji: "🚌", footprint: 2 },
+    { activity: "Flying internationally", impact: "high", emoji: "✈️", footprint: 50 },
+    { activity: "Eating local vegetables", impact: "low", emoji: "🥬", footprint: 1 },
+    { activity: "Eating imported beef", impact: "high", emoji: "🥩", footprint: 15 },
+    { activity: "Using solar panels", impact: "low", emoji: "☀️", footprint: 0 },
+    { activity: "Using coal power", impact: "high", emoji: "⛽", footprint: 20 },
+    { activity: "Recycling bottles", impact: "low", emoji: "♻️", footprint: -2 },
+    { activity: "Throwing away plastic", impact: "high", emoji: "🗑️", footprint: 5 }
+];
+
+const biodiversityData = [
+    { species: "Polar Bear", habitat: "Arctic", emoji: "🐻‍❄️", habitat_emoji: "🧊" },
+    { species: "Cactus", habitat: "Desert", emoji: "🌵", habitat_emoji: "🏜️" },
+    { species: "Coral", habitat: "Ocean", emoji: "🪸", habitat_emoji: "🌊" },
+    { species: "Tiger", habitat: "Forest", emoji: "🐅", habitat_emoji: "🌲" },
+    { species: "Penguin", habitat: "Antarctic", emoji: "🐧", habitat_emoji: "❄️" },
+    { species: "Butterfly", habitat: "Garden", emoji: "🦋", habitat_emoji: "🌺" }
+];
+
 const ecoTips = [
     "💡 Switch to LED bulbs - they use 80% less energy than traditional bulbs!",
     "🚿 Take shorter showers - you can save up to 25 gallons per day!",
@@ -20,274 +120,1146 @@ const ecoTips = [
     "📱 Unplug devices when not in use - they still consume energy when plugged in!"
 ];
 
-// Game content for each game
-const gameContent = {
-    'recycle-rush': {
-        title: '🗂️ Recycle Rush',
-        points: 75,
-        content: `
-            <div style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">🗂️</div>
-                <h3>Recycle Rush</h3>
-                <p style="color: #7f8c8d; margin: 1rem 0;">
-                    Sort waste items into the correct recycling bins as fast as you can!
-                </p>
-                <div style="margin: 2rem 0;">
-                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                        <div style="background: #3498db; color: white; padding: 1rem; border-radius: 10px; min-width: 80px;">
-                            ♻️<br>Plastic
+// Authentication Functions
+function initializeApp() {
+    const stored_token = localStorage.getItem('eco_green_token');
+    const stored_user = localStorage.getItem('eco_green_user');
+    
+    if (stored_token && stored_user) {
+        authToken = stored_token;
+        currentUser = JSON.parse(stored_user);
+        isGuest = false;
+        updateAuthUI();
+        updateUserDisplay();
+    } else {
+        setTimeout(() => {
+            showLoginModal();
+        }, 1000);
+    }
+    
+    setupEventHandlers();
+    showToast('Welcome to EDU-GREEN! Complete games and challenges to earn points!', 'success');
+}
+
+function showLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+// Helper function to update institution label based on type
+function updateInstitutionLabel() {
+    const institutionType = document.getElementById('regInstitutionType').value;
+    const institutionLabel = document.getElementById('institutionLabel');
+    
+    switch(institutionType) {
+        case 'school':
+            institutionLabel.textContent = 'School Name:';
+            break;
+        case 'college':
+            institutionLabel.textContent = 'College Name:';
+            break;
+        case 'university':
+            institutionLabel.textContent = 'University Name:';
+            break;
+        default:
+            institutionLabel.textContent = 'Institution Name:';
+    }
+}
+
+// Enhanced user profile display
+function updateUserDisplay() {
+    if (currentUser) {
+        userPoints = currentUser.points;
+        streak = currentUser.streak;
+        
+        // Update username display with full name if available
+        const usernameElement = document.getElementById('username');
+        if (usernameElement && currentUser.firstName) {
+            usernameElement.textContent = `${currentUser.firstName} ${currentUser.lastName || ''}`.trim();
+        } else if (usernameElement) {
+            usernameElement.textContent = currentUser.username;
+        }
+    }
+    const pointsElement = document.getElementById('userPoints');
+    const streakElement = document.getElementById('streak');
+    if (pointsElement) pointsElement.textContent = userPoints.toLocaleString();
+    if (streakElement) streakElement.textContent = streak;
+}
+
+// Enhanced profile details function
+function showProfileDetails() {
+    if (!currentUser) {
+        showToast('Please login to view profile details', 'error');
+        return;
+    }
+    
+    let profileInfo = `Profile Details:\n\n`;
+    profileInfo += `Name: ${currentUser.firstName || ''} ${currentUser.lastName || ''}\n`;
+    profileInfo += `Email: ${currentUser.email}\n`;
+    
+    if (currentUser.phone) profileInfo += `Phone: ${currentUser.phone}\n`;
+    if (currentUser.institution) profileInfo += `Institution: ${currentUser.institution}\n`;
+    if (currentUser.grade) profileInfo += `Grade: ${currentUser.grade}\n`;
+    if (currentUser.studentId) profileInfo += `Student ID: ${currentUser.studentId}\n`;
+    if (currentUser.city) profileInfo += `Location: ${currentUser.city}, ${currentUser.state || ''}\n`;
+    
+    profileInfo += `\nGame Stats:\n`;
+    profileInfo += `Total Points: ${currentUser.points}\n`;
+    profileInfo += `Current Streak: ${currentUser.streak} days\n`;
+    
+    if (currentUser.interests && currentUser.interests.length > 0) {
+        profileInfo += `\nInterests: ${currentUser.interests.join(', ')}`;
+    }
+    
+    alert(profileInfo);
+}
+
+// Make functions globally available
+window.updateInstitutionLabel = updateInstitutionLabel;
+window.showProfileDetails = showProfileDetails;
+
+function hideLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function switchToRegister() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('authTitle').textContent = 'Register for ECO-GREEN';
+}
+
+function switchToLogin() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('authTitle').textContent = 'Login to ECO-GREEN';
+}
+
+function continueAsGuest() {
+    isGuest = true;
+    hideLoginModal();
+    updateAuthUI();
+    showToast('Welcome, Guest! Sign up to save your progress! 🌟', 'success');
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.token;
+            currentUser = data.user;
+            isGuest = false;
+            
+            localStorage.setItem('edu_green_token', authToken);
+            localStorage.setItem('edu_green_user', JSON.stringify(currentUser));
+            
+            hideLoginModal();
+            updateAuthUI();
+            updateUserDisplay();
+            showToast('Welcome back! 🌟', 'success');
+        } else {
+            showToast(data.error || 'Login failed', 'error');
+        }
+    } catch (error) {
+        console.warn('Login error:', error);
+        simulateLogin(email, password);
+    }
+}
+
+async function handleRegister(event) {
+    event.preventDefault();
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const school = document.getElementById('regSchool').value;
+    
+    try {
+        const response = await fetch(`${API_BASE}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, email, password, school })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.token;
+            currentUser = data.user;
+            isGuest = false;
+            
+            localStorage.setItem('eco_green_token', authToken);
+            localStorage.setItem('eco_green_user', JSON.stringify(currentUser));
+            
+            hideLoginModal();
+            updateAuthUI();
+            updateUserDisplay();
+            showToast('Welcome to ECO-GREEN! 🎉', 'success');
+        } else {
+            showToast(data.error || 'Registration failed', 'error');
+        }
+    } catch (error) {
+        console.warn('Registration error:', error);
+        simulateRegister(username, email, school);
+    }
+}
+
+function simulateLogin(email, password) {
+    currentUser = {
+        id: 1,
+        username: email.split('@')[0],
+        email: email,
+        school: 'Delhi Public School, Bangalore',
+        points: userPoints,
+        streak: streak
+    };
+    isGuest = false;
+    
+    localStorage.setItem('eco_green_user', JSON.stringify(currentUser));
+    
+    hideLoginModal();
+    updateAuthUI();
+    updateUserDisplay();
+    showToast('Welcome back! (Demo Mode) 🌟', 'success');
+}
+
+function simulateRegister(username, email, school) {
+    currentUser = {
+        id: 1,
+        username: username,
+        email: email,
+        school: school,
+        points: 1250,
+        streak: 1
+    };
+    isGuest = false;
+    
+    localStorage.setItem('eco_green_user', JSON.stringify(currentUser));
+    
+    hideLoginModal();
+    updateAuthUI();
+    updateUserDisplay();
+    showToast('Welcome to ECO-GREEN! (Demo Mode) 🎉', 'success');
+}
+
+function logout() {
+    authToken = null;
+    currentUser = null;
+    isGuest = true;
+    
+    localStorage.removeItem('edu_green_token');
+    localStorage.removeItem('edu_green_user');
+    
+    updateAuthUI();
+    userPoints = 1250;
+    streak = 7;
+    updateUserDisplay();
+    showToast('Logged out successfully!', 'success');
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('loginBtn');
+    const authButtons = document.getElementById('authButtons');
+    const userInfo = document.getElementById('userInfo');
+    const username = document.getElementById('username');
+    
+    if (isGuest) {
+        if (authButtons) authButtons.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
+    } else {
+        if (authButtons) authButtons.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'block';
+        if (username) username.textContent = currentUser.username;
+    }
+}
+
+function updateUserDisplay() {
+    if (currentUser) {
+        userPoints = currentUser.points;
+        streak = currentUser.streak;
+    }
+    const pointsElement = document.getElementById('userPoints');
+    const streakElement = document.getElementById('streak');
+    if (pointsElement) pointsElement.textContent = userPoints.toLocaleString();
+    if (streakElement) streakElement.textContent = streak;
+}
+
+// Game Modal Functions
+function openGameModal(gameType) {
+    console.log('Opening game modal for:', gameType);
+    
+    currentGame = gameType;
+    const modal = document.getElementById('gameModal');
+    const title = document.getElementById('gameTitle');
+    const gameInterface = document.getElementById('gameInterface');
+    
+    if (!modal || !gameInterface) {
+        console.error('Game modal elements not found!');
+        alert('Game modal not found. Please refresh the page.');
+        return;
+    }
+    
+    const gameTitles = {
+        'recycle-rush': 'Recycle Rush',
+        'water-saver': 'Water Saver Puzzle',
+        'carbon-crusher': 'Carbon Crusher',
+        'edunova-quiz': 'EduNova Quiz',
+        'biodiversity-defender': 'Biodiversity Defender'
+    };
+    
+    if (title) {
+        title.textContent = gameTitles[gameType] || 'Eco Game';
+    }
+    
+    gameInterface.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading game...</div>';
+    modal.style.display = 'flex';
+    
+    setTimeout(() => {
+        try {
+            switch(gameType) {
+                case 'recycle-rush':
+                    initRecycleRush();
+                    break;
+                case 'water-saver':
+                    initWaterSaver();
+                    break;
+                case 'carbon-crusher':
+                    initCarbonCrusher();
+                    break;
+                case 'edunova-quiz':
+                    initEduNovaQuiz();
+                    break;
+                case 'biodiversity-defender':
+                    initBiodiversityDefender();
+                    break;
+                default:
+                    gameInterface.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3>Game "${gameType}" not implemented yet</h3>
+                            <p>This game is coming soon!</p>
+                            <button class="btn btn-secondary" onclick="closeGameModal()">Close</button>
                         </div>
-                        <div style="background: #2ecc71; color: white; padding: 1rem; border-radius: 10px; min-width: 80px;">
-                            📄<br>Paper
-                        </div>
-                        <div style="background: #f39c12; color: white; padding: 1rem; border-radius: 10px; min-width: 80px;">
-                            🍾<br>Glass
-                        </div>
-                        <div style="background: #27ae60; color: white; padding: 1rem; border-radius: 10px; min-width: 80px;">
-                            🍎<br>Organic
-                        </div>
-                    </div>
+                    `;
+            }
+        } catch (error) {
+            console.error('Error initializing game:', error);
+            gameInterface.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h3>Game Error</h3>
+                    <p>Sorry, there was an error loading this game.</p>
+                    <button class="btn btn-secondary" onclick="closeGameModal()">Close</button>
                 </div>
-                <p style="color: var(--primary-green); font-weight: bold;">
-                    Earn +75 Points for completing this game!
-                </p>
+            `;
+        }
+    }, 100);
+}
+
+function closeGameModal() {
+    const modal = document.getElementById('gameModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    currentGame = null;
+    gameState = {};
+    
+    if (gameState.gameTimer) clearInterval(gameState.gameTimer);
+    if (gameState.spawnTimer) clearInterval(gameState.spawnTimer);
+    if (gameState.questionTimer) clearInterval(gameState.questionTimer);
+}
+
+// RECYCLE RUSH GAME
+function initRecycleRush() {
+    gameState = {
+        score: 0,
+        timeLeft: 120,
+        currentItems: [],
+        correctSorts: 0,
+        totalItems: 0
+    };
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div class="game-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="recycleScore">0</div>
+                <div class="stat-label">Score</div>
             </div>
-        `
-    },
-    'water-saver': {
-        title: '💧 Water Saver Puzzle',
-        points: 60,
-        content: `
-            <div style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">💧</div>
-                <h3>Water Saver Puzzle</h3>
-                <p style="color: #7f8c8d; margin: 1rem 0;">
-                    Fix water leaks and learn conservation techniques through interactive scenarios.
-                </p>
-                <div style="background: linear-gradient(to bottom, #87CEEB, #4682B4); border-radius: 15px; padding: 2rem; margin: 2rem 0;">
-                    <div style="color: white; font-size: 2rem; margin-bottom: 1rem;">🚿</div>
-                    <p style="color: white;">Click to fix leaks and save water!</p>
-                </div>
-                <p style="color: var(--primary-green); font-weight: bold;">
-                    Earn +60 Points for completing this game!
-                </p>
+            <div class="stat-item">
+                <div class="stat-value" id="recycleTime">2:00</div>
+                <div class="stat-label">Time Left</div>
             </div>
-        `
-    },
-    'carbon-crusher': {
-        title: '⚡ Carbon Crusher',
-        points: 80,
-        content: `
-            <div style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">⚡</div>
-                <h3>Carbon Crusher</h3>
-                <p style="color: #7f8c8d; margin: 1rem 0;">
-                    Make eco-friendly choices and learn about reducing your carbon footprint.
-                </p>
-                <div style="display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
-                    <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 10px; text-align: center; min-width: 120px;">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚗</div>
-                        <small>High Carbon</small>
-                    </div>
-                    <div style="color: #27ae60; font-size: 2rem; margin: auto;">VS</div>
-                    <div style="background: var(--primary-green); color: white; padding: 1.5rem; border-radius: 10px; text-align: center; min-width: 120px;">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚲</div>
-                        <small>Low Carbon</small>
-                    </div>
-                </div>
-                <p style="color: var(--primary-green); font-weight: bold;">
-                    Earn +80 Points for completing this game!
-                </p>
+            <div class="stat-item">
+                <div class="stat-value" id="recycleAccuracy">100%</div>
+                <div class="stat-label">Accuracy</div>
             </div>
-        `
-    },
-    'edunova-quiz': {
-        title: '🧠 EduNova Quiz',
-        points: 90,
-        content: `
-            <div style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">🧠</div>
-                <h3>EduNova Environmental Quiz</h3>
-                <p style="color: #7f8c8d; margin: 1rem 0;">
-                    Test your knowledge about environmental science, climate change, and sustainability.
-                </p>
-                <div style="background: var(--bg-light); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
-                    <div style="color: var(--text-dark); font-weight: bold; margin-bottom: 1rem;">Sample Question:</div>
-                    <p style="color: #7f8c8d;">"What percentage of the Earth's water is freshwater?"</p>
-                    <div style="margin-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <div style="background: white; padding: 0.5rem; border-radius: 5px; font-size: 0.9rem;">A) 97%</div>
-                        <div style="background: white; padding: 0.5rem; border-radius: 5px; font-size: 0.9rem;">B) 71%</div>
-                        <div style="background: var(--primary-green); color: white; padding: 0.5rem; border-radius: 5px; font-size: 0.9rem;">C) 3% ✓</div>
-                        <div style="background: white; padding: 0.5rem; border-radius: 5px; font-size: 0.9rem;">D) 25%</div>
-                    </div>
-                </div>
-                <p style="color: var(--primary-green); font-weight: bold;">
-                    Earn +90 Points for completing this game!
-                </p>
+        </div>
+        
+        <div class="items-container" id="itemsContainer">
+            <p>Drag items to the correct recycling bins!</p>
+        </div>
+        
+        <div class="bins-container">
+            <div class="bin plastic" data-type="plastic" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div style="font-size: 3rem;">🔵</div>
+                <div class="bin-label">Plastic</div>
             </div>
-        `
-    },
-    'biodiversity-defender': {
-        title: '🦋 Biodiversity Defender',
-        points: 70,
-        content: `
-            <div style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">🦋</div>
-                <h3>Biodiversity Defender</h3>
-                <p style="color: #7f8c8d; margin: 1rem 0;">
-                    Match animals and plants with their correct habitats to learn about ecosystems.
-                </p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-                    <div>
-                        <h4 style="margin-bottom: 1rem;">Species</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div style="background: var(--bg-light); padding: 1rem; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem;">🐻‍❄️</div>
-                                <small>Polar Bear</small>
-                            </div>
-                            <div style="background: var(--bg-light); padding: 1rem; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem;">🌵</div>
-                                <small>Cactus</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 style="margin-bottom: 1rem;">Habitats</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div style="background: var(--secondary-blue); color: white; padding: 1rem; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem;">🧊</div>
-                                <small>Arctic</small>
-                            </div>
-                            <div style="background: var(--accent-orange); color: white; padding: 1rem; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem;">🏜️</div>
-                                <small>Desert</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p style="color: var(--primary-green); font-weight: bold;">
-                    Earn +70 Points for completing this game!
-                </p>
+            <div class="bin paper" data-type="paper" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div style="font-size: 3rem;">📄</div>
+                <div class="bin-label">Paper</div>
             </div>
-        `
+            <div class="bin glass" data-type="glass" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div style="font-size: 3rem;">🟡</div>
+                <div class="bin-label">Glass</div>
+            </div>
+            <div class="bin organic" data-type="organic" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div style="font-size: 3rem;">🟢</div>
+                <div class="bin-label">Organic</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="startRecycleRush()">Start Game</button>
+        </div>
+    `;
+}
+
+window.startRecycleRush = function() {
+    gameState.gameTimer = setInterval(() => {
+        gameState.timeLeft--;
+        updateRecycleTimer();
+        
+        if (gameState.timeLeft <= 0) {
+            endRecycleRush();
+        }
+    }, 1000);
+    
+    spawnWasteItem();
+    gameState.spawnTimer = setInterval(spawnWasteItem, 3000);
+};
+
+function spawnWasteItem() {
+    if (gameState.timeLeft <= 0) return;
+    
+    const randomItem = wasteItems[Math.floor(Math.random() * wasteItems.length)];
+    const itemsContainer = document.getElementById('itemsContainer');
+    
+    const item = document.createElement('div');
+    item.className = 'waste-item';
+    item.draggable = true;
+    item.dataset.type = randomItem.type;
+    item.innerHTML = `${randomItem.emoji}<br><small>${randomItem.name}</small>`;
+    
+    item.ondragstart = function(event) {
+        event.dataTransfer.setData("text/plain", randomItem.type);
+        event.dataTransfer.setData("element-id", item.id);
+        item.classList.add('dragging');
+    };
+    
+    item.ondragend = function() {
+        item.classList.remove('dragging');
+    };
+    
+    item.id = 'waste-' + Date.now();
+    itemsContainer.appendChild(item);
+    gameState.totalItems++;
+}
+
+window.allowDrop = function(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+};
+
+window.drop = function(event) {
+    event.preventDefault();
+    const binType = event.currentTarget.dataset.type;
+    const itemType = event.dataTransfer.getData("text/plain");
+    const elementId = event.dataTransfer.getData("element-id");
+    const item = document.getElementById(elementId);
+    
+    event.currentTarget.classList.remove('drag-over');
+    
+    if (item) {
+        item.remove();
+        
+        if (binType === itemType) {
+            gameState.correctSorts++;
+            gameState.score += 10;
+            showToast('Correct! +10 points', 'success');
+        } else {
+            gameState.score = Math.max(0, gameState.score - 5);
+            showToast('Wrong bin! -5 points', 'error');
+        }
+        
+        updateRecycleScore();
     }
 };
 
-// API Functions
-async function makeAPICall(endpoint, method = 'GET', data = null) {
-    const config = {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-        }
+function updateRecycleTimer() {
+    const minutes = Math.floor(gameState.timeLeft / 60);
+    const seconds = gameState.timeLeft % 60;
+    const timeElement = document.getElementById('recycleTime');
+    if (timeElement) {
+        timeElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+}
+
+function updateRecycleScore() {
+    const scoreElement = document.getElementById('recycleScore');
+    const accuracyElement = document.getElementById('recycleAccuracy');
+    if (scoreElement) scoreElement.textContent = gameState.score;
+    
+    const accuracy = gameState.totalItems > 0 ? Math.round((gameState.correctSorts / gameState.totalItems) * 100) : 100;
+    if (accuracyElement) accuracyElement.textContent = accuracy + '%';
+}
+
+function endRecycleRush() {
+    clearInterval(gameState.gameTimer);
+    clearInterval(gameState.spawnTimer);
+    
+    document.getElementById('itemsContainer').innerHTML = '';
+    
+    const finalScore = Math.max(0, Math.min(gameState.score, 75));
+    const gameInterface = document.getElementById('gameInterface');
+    
+    gameInterface.innerHTML = `
+        <div style="text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">🎉</div>
+            <h3 style="color: var(--primary-green);">Game Complete!</h3>
+            <p style="margin: 1rem 0;">Final Score: ${gameState.score}</p>
+            <p style="margin: 1rem 0;">Accuracy: ${Math.round((gameState.correctSorts / Math.max(gameState.totalItems, 1)) * 100)}%</p>
+            <p style="color: var(--primary-green); font-weight: bold; font-size: 1.2rem;">
+                +${finalScore} Points Earned!
+            </p>
+            <div style="margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="openGameModal('recycle-rush')">Play Again</button>
+                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin-left: 1rem;">Close</button>
+            </div>
+        </div>
+    `;
+    
+    awardPoints(finalScore);
+    createConfetti();
+}
+
+// CARBON CRUSHER GAME
+function initCarbonCrusher() {
+    console.log('Initializing Carbon Crusher');
+    
+    gameState = {
+        score: 0,
+        carbonSaved: 0,
+        choicesMade: 0,
+        correctChoices: 0,
+        totalChoices: 6
     };
-
-    if (authToken) {
-        config.headers.Authorization = `Bearer ${authToken}`;
-    }
-
-    if (data) {
-        config.body = JSON.stringify(data);
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}${endpoint}`, config);
-        const result = await response.json();
+    
+    const choices = shuffleArray([...carbonChoices]).slice(0, 6);
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h3>Choose the Eco-Friendly Options!</h3>
+            <p>Click on activities with lower carbon footprint</p>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                <div>Score: <span id="carbonScore" style="font-weight: bold; color: #28a745;">0</span></div>
+                <div>CO₂ Saved: <span id="carbonSaved" style="font-weight: bold; color: #007bff;">0</span> kg</div>
+                <div>Choices Made: <span id="choicesMade">0</span>/${gameState.totalChoices}</div>
+            </div>
+        </div>
         
-        if (!response.ok) {
-            throw new Error(result.error || 'API request failed');
+        <div id="carbonChoices" style="display: grid; gap: 1rem; margin: 2rem 0;">
+            ${choices.map((choice, index) => `
+                <div id="choice-${index}" style="
+                    padding: 1rem; 
+                    border: 2px solid #dee2e6; 
+                    border-radius: 10px; 
+                    cursor: pointer; 
+                    background: white;
+                    transition: all 0.3s;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                " onclick="makeChoice(${index}, '${choice.impact}', ${choice.footprint})">
+                    <div style="font-size: 2rem;">${choice.emoji}</div>
+                    <div>
+                        <div style="font-weight: bold;">${choice.activity}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Click to choose</div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="finishCarbonGame()">Finish Game</button>
+        </div>
+    `;
+    
+    gameState.choices = choices;
+}
+
+window.makeChoice = function(index, impact, footprint) {
+    console.log('Making choice:', index, impact, footprint);
+    
+    const element = document.getElementById(`choice-${index}`);
+    if (!element || element.style.opacity === '0.5') return;
+    
+    element.style.opacity = '0.5';
+    element.style.cursor = 'default';
+    element.onclick = null;
+    
+    if (impact === 'low') {
+        element.style.borderColor = '#28a745';
+        element.style.backgroundColor = '#d4edda';
+        gameState.correctChoices++;
+        gameState.score += 15;
+        gameState.carbonSaved += Math.abs(footprint) || 5;
+        showToast('Great eco choice! +15 points', 'success');
+    } else {
+        element.style.borderColor = '#dc3545';
+        element.style.backgroundColor = '#f8d7da';
+        gameState.score += 5;
+        showToast('High carbon choice. +5 points', 'error');
+    }
+    
+    gameState.choicesMade++;
+    
+    const scoreElement = document.getElementById('carbonScore');
+    const savedElement = document.getElementById('carbonSaved');
+    const madeElement = document.getElementById('choicesMade');
+    
+    if (scoreElement) scoreElement.textContent = gameState.score;
+    if (savedElement) savedElement.textContent = gameState.carbonSaved;
+    if (madeElement) madeElement.textContent = gameState.choicesMade;
+    
+    if (gameState.choicesMade >= gameState.totalChoices) {
+        setTimeout(finishCarbonGame, 1000);
+    }
+};
+
+window.finishCarbonGame = function() {
+    const accuracy = Math.round((gameState.correctChoices / Math.max(gameState.choicesMade, 1)) * 100);
+    const finalScore = Math.min(gameState.score, 80);
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">⚡</div>
+            <h3 style="color: #28a745;">Carbon Game Complete!</h3>
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+                <p style="margin: 0.5rem 0;"><strong>Eco-Friendly Choices:</strong> ${gameState.correctChoices}/${gameState.choicesMade}</p>
+                <p style="margin: 0.5rem 0;"><strong>CO₂ Saved:</strong> ${gameState.carbonSaved}kg</p>
+                <p style="margin: 0.5rem 0;"><strong>Accuracy:</strong> ${accuracy}%</p>
+                <p style="color: #28a745; font-weight: bold; font-size: 1.2rem; margin-top: 1rem;">
+                    +${finalScore} Points Earned!
+                </p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="openGameModal('carbon-crusher')" style="margin: 0.5rem;">Play Again</button>
+                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin: 0.5rem;">Close</button>
+            </div>
+        </div>
+    `;
+    
+    awardPoints(finalScore);
+    createConfetti();
+};
+
+// EDUNOVA QUIZ GAME
+function initEduNovaQuiz() {
+    console.log('Initializing Quiz');
+    
+    gameState = {
+        currentQuestion: 0,
+        score: 0,
+        selectedAnswer: null,
+        questions: shuffleArray([...quizQuestions]).slice(0, 5)
+    };
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h3>Environmental Knowledge Quiz</h3>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px;">
+                <div>Question <span id="questionNum">1</span> of ${gameState.questions.length}</div>
+                <div>Score: <span id="quizScore" style="font-weight: bold; color: #28a745;">0</span></div>
+            </div>
+        </div>
+        
+        <div id="questionContainer" style="margin: 2rem 0;">
+            <div style="text-align: center; padding: 2rem;">
+                <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+    `;
+}
+
+window.startQuiz = function() {
+    displayQuestion();
+};
+
+function displayQuestion() {
+    const question = gameState.questions[gameState.currentQuestion];
+    const container = document.getElementById('questionContainer');
+    
+    container.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 15px; border: 1px solid #dee2e6;">
+            <h4 style="margin-bottom: 2rem; color: #333;">${question.question}</h4>
+            <div id="optionsContainer" style="display: grid; gap: 1rem;">
+                ${question.options.map((option, index) => `
+                    <div id="option-${index}" style="
+                        padding: 1rem; 
+                        border: 2px solid #dee2e6; 
+                        border-radius: 10px; 
+                        cursor: pointer; 
+                        background: #f8f9fa;
+                        transition: all 0.3s;
+                    " onclick="selectOption(${index})">
+                        ${option}
+                    </div>
+                `).join('')}
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer</button>
+            </div>
+        </div>
+    `;
+    
+    const questionNumElement = document.getElementById('questionNum');
+    if (questionNumElement) {
+        questionNumElement.textContent = gameState.currentQuestion + 1;
+    }
+    gameState.selectedAnswer = null;
+}
+
+window.selectOption = function(index) {
+    for (let i = 0; i < gameState.questions[gameState.currentQuestion].options.length; i++) {
+        const opt = document.getElementById(`option-${i}`);
+        if (opt) {
+            opt.style.border = '2px solid #dee2e6';
+            opt.style.background = '#f8f9fa';
         }
+    }
+    
+    const selected = document.getElementById(`option-${index}`);
+    if (selected) {
+        selected.style.border = '2px solid #007bff';
+        selected.style.background = '#e3f2fd';
+    }
+    
+    gameState.selectedAnswer = index;
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+    }
+};
+
+window.submitAnswer = function() {
+    const question = gameState.questions[gameState.currentQuestion];
+    const isCorrect = gameState.selectedAnswer === question.correct;
+    
+    for (let i = 0; i < question.options.length; i++) {
+        const opt = document.getElementById(`option-${i}`);
+        if (opt) {
+            opt.onclick = null;
+            opt.style.cursor = 'default';
+            
+            if (i === question.correct) {
+                opt.style.border = '2px solid #28a745';
+                opt.style.background = '#d4edda';
+            } else if (i === gameState.selectedAnswer && !isCorrect) {
+                opt.style.border = '2px solid #dc3545';
+                opt.style.background = '#f8d7da';
+            }
+        }
+    }
+    
+    if (isCorrect) {
+        gameState.score += 10;
+        showToast('Correct! +10 points', 'success');
+    } else {
+        showToast('Wrong answer. The correct answer is highlighted.', 'error');
+    }
+    
+    const quizScoreElement = document.getElementById('quizScore');
+    if (quizScoreElement) {
+        quizScoreElement.textContent = gameState.score;
+    }
+    
+    setTimeout(() => {
+        gameState.currentQuestion++;
         
-        return result;
-    } catch (error) {
-        console.error('API Error:', error);
-        showToast(error.message, 'error');
-        return null;
+        if (gameState.currentQuestion >= gameState.questions.length) {
+            endQuiz();
+        } else {
+            displayQuestion();
+        }
+    }, 2500);
+};
+
+function endQuiz() {
+    const finalScore = Math.min(gameState.score, 90);
+    const accuracy = Math.round((gameState.score / (gameState.questions.length * 10)) * 100);
+    
+    const container = document.getElementById('questionContainer');
+    container.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">🧠</div>
+            <h3 style="color: #28a745;">Quiz Complete!</h3>
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+                <p><strong>Final Score:</strong> ${gameState.score}/${gameState.questions.length * 10}</p>
+                <p><strong>Accuracy:</strong> ${accuracy}%</p>
+                <p style="color: #28a745; font-weight: bold; font-size: 1.2rem; margin-top: 1rem;">
+                    +${finalScore} Points Earned!
+                </p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="openGameModal('edunova-quiz')" style="margin: 0.5rem;">Play Again</button>
+                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin: 0.5rem;">Close</button>
+            </div>
+        </div>
+    `;
+    
+    awardPoints(finalScore);
+    createConfetti();
+}
+
+// BIODIVERSITY DEFENDER GAME
+function initBiodiversityDefender() {
+    console.log('Initializing Biodiversity Defender');
+    
+    gameState = {
+        score: 0,
+        matches: 0,
+        attempts: 0,
+        currentPair: 0,
+        pairs: shuffleArray([...biodiversityData]).slice(0, 4)
+    };
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h3>Match Species to Habitats!</h3>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px;">
+                <div>Score: <span id="bioScore" style="font-weight: bold; color: #28a745;">0</span></div>
+                <div>Matches: <span id="bioMatches" style="font-weight: bold; color: #007bff;">0</span>/${gameState.pairs.length}</div>
+            </div>
+        </div>
+        
+        <div id="biodiversityGame">
+            <div style="text-align: center; margin: 2rem 0;">
+                <button class="btn btn-primary" onclick="startBioGame()">Start Matching</button>
+            </div>
+        </div>
+    `;
+}
+
+window.startBioGame = function() {
+    showBioPair();
+};
+
+function showBioPair() {
+    if (gameState.currentPair >= gameState.pairs.length) {
+        endBioGame();
+        return;
+    }
+    
+    const pair = gameState.pairs[gameState.currentPair];
+    const container = document.getElementById('biodiversityGame');
+    
+    const allHabitats = ['Arctic', 'Desert', 'Ocean', 'Forest', 'Antarctic', 'Garden', 'Rainforest'];
+    const wrongHabitats = allHabitats.filter(h => h !== pair.habitat).slice(0, 2);
+    const habitatOptions = shuffleArray([pair.habitat, ...wrongHabitats]);
+    
+    container.innerHTML = `
+        <div style="text-align: center;">
+            <div style="font-size: 6rem; margin: 2rem 0;">${pair.emoji}</div>
+            <h4 style="margin-bottom: 2rem;">Where does the ${pair.species} live?</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; max-width: 600px; margin: 0 auto;">
+                ${habitatOptions.map((habitat, index) => `
+                    <div class="habitat-option" style="padding: 1.5rem; background: #f8f9fa; border-radius: 15px; cursor: pointer; border: 3px solid transparent; text-align: center;" onclick="selectBioHabitat('${habitat}', '${pair.habitat}')">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">${getHabitatEmoji(habitat)}</div>
+                        <div style="font-weight: bold;">${habitat}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function getHabitatEmoji(habitat) {
+    const emojiMap = {
+        'Arctic': '🧊',
+        'Desert': '🏜️',
+        'Ocean': '🌊',
+        'Forest': '🌲',
+        'Antarctic': '❄️',
+        'Garden': '🌺',
+        'Rainforest': '🌴'
+    };
+    return emojiMap[habitat] || '🌍';
+}
+
+window.selectBioHabitat = function(selected, correct) {
+    gameState.attempts++;
+    
+    document.querySelectorAll('.habitat-option').forEach(opt => {
+        opt.onclick = null;
+        opt.style.cursor = 'default';
+    });
+    
+    const options = document.querySelectorAll('.habitat-option');
+    const pair = gameState.pairs[gameState.currentPair];
+    
+    if (selected === correct) {
+        gameState.matches++;
+        gameState.score += 15;
+        
+        options.forEach(opt => {
+            if (opt.textContent.includes(selected)) {
+                opt.style.border = '3px solid #28a745';
+                opt.style.background = '#d4edda';
+            }
+        });
+        
+        showToast(`Correct! ${pair.species} lives in ${correct}`, 'success');
+    } else {
+        options.forEach(opt => {
+            if (opt.textContent.includes(selected)) {
+                opt.style.border = '3px solid #dc3545';
+                opt.style.background = '#f8d7da';
+            } else if (opt.textContent.includes(correct)) {
+                opt.style.border = '3px solid #28a745';
+                opt.style.background = '#d4edda';
+            }
+        });
+        
+        showToast(`Wrong! ${pair.species} lives in ${correct}`, 'error');
+    }
+    
+    const scoreElement = document.getElementById('bioScore');
+    const matchesElement = document.getElementById('bioMatches');
+    if (scoreElement) scoreElement.textContent = gameState.score;
+    if (matchesElement) matchesElement.textContent = gameState.matches;
+    
+    setTimeout(() => {
+        gameState.currentPair++;
+        showBioPair();
+    }, 2500);
+};
+
+function endBioGame() {
+    const accuracy = Math.round((gameState.matches / gameState.attempts) * 100);
+    const finalScore = Math.min(gameState.score, 70);
+    
+    const container = document.getElementById('biodiversityGame');
+    container.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">🦋</div>
+            <h3 style="color: #28a745;">Biodiversity Game Complete!</h3>
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+                <p><strong>Correct Matches:</strong> ${gameState.matches}/${gameState.pairs.length}</p>
+                <p><strong>Accuracy:</strong> ${accuracy}%</p>
+                <p style="color: #28a745; font-weight: bold; font-size: 1.2rem; margin-top: 1rem;">
+                    +${finalScore} Points Earned!
+                </p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="openGameModal('biodiversity-defender')" style="margin: 0.5rem;">Play Again</button>
+                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin: 0.5rem;">Close</button>
+            </div>
+        </div>
+    `;
+    
+    awardPoints(finalScore);
+    createConfetti();
+}
+
+// WATER SAVER GAME
+function initWaterSaver() {
+    gameState = {
+        score: 0,
+        waterSaved: 0,
+        leaksFixed: 0,
+        totalLeaks: 6,
+        timeLeft: 90
+    };
+    
+    const gameInterface = document.getElementById('gameInterface');
+    gameInterface.innerHTML = `
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h3>Find and fix water leaks to save water!</h3>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px;">
+                <div>Score: <span id="waterScore" style="font-weight: bold; color: #28a745;">0</span></div>
+                <div>Water Saved: <span id="waterSaved" style="font-weight: bold; color: #007bff;">0</span>L</div>
+                <div>Time Left: <span id="waterTime" style="font-weight: bold; color: #dc3545;">1:30</span></div>
+            </div>
+        </div>
+        
+        <div style="position: relative; background: linear-gradient(to bottom, #87CEEB, #4682B4); border-radius: 15px; padding: 2rem; margin: 2rem 0; min-height: 300px;">
+            <div style="color: white; text-align: center; margin-bottom: 2rem;">
+                <h4>🏠 House Water System</h4>
+                <p>Click on the leaking areas to fix them!</p>
+            </div>
+            <div id="waterSystem">
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="startWaterSaver()">Start Game</button>
+        </div>
+    `;
+}
+
+window.startWaterSaver = function() {
+    gameState.gameTimer = setInterval(() => {
+        gameState.timeLeft--;
+        updateWaterTimer();
+        
+        if (gameState.timeLeft <= 0) {
+            endWaterSaver();
+        }
+    }, 1000);
+    
+    generateWaterLeaks();
+};
+
+function generateWaterLeaks() {
+    const waterSystem = document.getElementById('waterSystem');
+    const leakPositions = [
+        { top: '20%', left: '15%', type: 'faucet' },
+        { top: '40%', left: '70%', type: 'pipe' },
+        { top: '60%', left: '30%', type: 'toilet' },
+        { top: '80%', left: '60%', type: 'shower' },
+        { top: '30%', left: '50%', type: 'pipe' },
+        { top: '70%', left: '80%', type: 'faucet' }
+    ];
+    
+    leakPositions.forEach((leak, index) => {
+        const leakElement = document.createElement('div');
+        leakElement.style.cssText = `
+            position: absolute;
+            top: ${leak.top};
+            left: ${leak.left};
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ff6b6b, #ff8e8e);
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 1s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        `;
+        leakElement.innerHTML = '💧';
+        leakElement.onclick = () => fixLeak(index, leakElement);
+        leakElement.id = `leak-${index}`;
+        
+        waterSystem.appendChild(leakElement);
+    });
+}
+
+function fixLeak(leakIndex, element) {
+    element.style.display = 'none';
+    gameState.leaksFixed++;
+    gameState.score += 10;
+    gameState.waterSaved += Math.floor(Math.random() * 20) + 10;
+    
+    showToast(`Leak fixed! +10 points`, 'success');
+    updateWaterStats();
+    
+    if (gameState.leaksFixed >= gameState.totalLeaks) {
+        setTimeout(endWaterSaver, 500);
     }
 }
 
-// Authentication functions
-async function login(email, password) {
-    const result = await makeAPICall('/auth/login', 'POST', { email, password });
-    
-    if (result) {
-        authToken = result.token;
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
-        updateUserDisplay(result.user);
-        showToast('Login successful!', 'success');
-        return result;
+function updateWaterTimer() {
+    const minutes = Math.floor(gameState.timeLeft / 60);
+    const seconds = gameState.timeLeft % 60;
+    const timeElement = document.getElementById('waterTime');
+    if (timeElement) {
+        timeElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
-    return null;
 }
 
-async function register(userData) {
-    const result = await makeAPICall('/auth/register', 'POST', userData);
-    
-    if (result) {
-        authToken = result.token;
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
-        updateUserDisplay(result.user);
-        showToast('Registration successful!', 'success');
-        return result;
-    }
-    return null;
+function updateWaterStats() {
+    const scoreElement = document.getElementById('waterScore');
+    const savedElement = document.getElementById('waterSaved');
+    if (scoreElement) scoreElement.textContent = gameState.score;
+    if (savedElement) savedElement.textContent = gameState.waterSaved;
 }
 
-async function getCurrentUser() {
-    if (!authToken) return null;
+function endWaterSaver() {
+    clearInterval(gameState.gameTimer);
     
-    const result = await makeAPICall('/auth/me');
-    if (result) {
-        updateUserDisplay(result);
-        return result;
-    }
-    return null;
+    const finalScore = Math.min(gameState.score, 60);
+    const gameInterface = document.getElementById('gameInterface');
+    
+    gameInterface.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">💧</div>
+            <h3 style="color: #28a745;">Water Conservation Complete!</h3>
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+                <p><strong>Leaks Fixed:</strong> ${gameState.leaksFixed}/${gameState.totalLeaks}</p>
+                <p><strong>Water Saved:</strong> ${gameState.waterSaved} liters</p>
+                <p style="color: #28a745; font-weight: bold; font-size: 1.2rem; margin-top: 1rem;">
+                    +${finalScore} Points Earned!
+                </p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="openGameModal('water-saver')" style="margin: 0.5rem;">Play Again</button>
+                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin: 0.5rem;">Close</button>
+            </div>
+        </div>
+    `;
+    
+    awardPoints(finalScore);
+    createConfetti();
 }
 
-// Game functions
-async function submitGameScore(gameId, score) {
-    if (!authToken) {
-        showToast('Please login first', 'error');
-        return null;
-    }
-    
-    const result = await makeAPICall(`/games/${gameId}/score`, 'POST', { score });
-    
-    if (result) {
-        updateUserPoints(result.user.points);
-        showToast(`Game completed! +${result.points_earned} points earned!`, 'success');
-        return result;
-    }
-    return null;
+// QUICK QUIZ FOR CHALLENGES
+function openQuickQuiz() {
+    openGameModal('edunova-quiz');
 }
 
-// Challenge functions
-async function submitChallenge(challengeId, submissionData) {
-    if (!authToken) {
-        showToast('Please login first', 'error');
-        return null;
-    }
+// Utility Functions
+function awardPoints(points) {
+    userPoints += points;
+    updateUserDisplay();
     
-    const result = await makeAPICall(`/challenges/${challengeId}/submit`, 'POST', submissionData);
-    
-    if (result) {
-        showToast('Challenge submitted successfully!', 'success');
-        return result;
+    if (currentUser) {
+        currentUser.points = userPoints;
+        localStorage.setItem('edu_green_user', JSON.stringify(currentUser));
     }
-    return null;
 }
 
-// Leaderboard functions
-async function loadLeaderboard() {
-    const result = await makeAPICall('/leaderboard/schools');
-    
-    if (result && result.schools) {
-        updateLeaderboardDisplay(result.schools);
-        return result;
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return null;
+    return shuffled;
 }
 
 // Navigation functions
@@ -301,238 +1273,11 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Game modal functions
-function openGameModal(gameType) {
-    const modal = document.getElementById('gameModal');
-    const title = document.getElementById('gameTitle');
-    const gameInterface = document.getElementById('gameInterface');
-    
-    if (gameContent[gameType]) {
-        title.textContent = gameContent[gameType].title;
-        gameInterface.innerHTML = gameContent[gameType].content;
-        
-        // Add start game button
-        gameInterface.innerHTML += `
-            <div style="margin-top: 2rem;">
-                <button class="btn btn-primary" onclick="startGame('${gameType}')">Start Game</button>
-            </div>
-        `;
-    }
-    
-    modal.style.display = 'flex';
-}
-
-function closeGameModal() {
-    const modal = document.getElementById('gameModal');
-    modal.style.display = 'none';
-}
-
-function startGame(gameType) {
-    if (!gameContent[gameType]) return;
-    
-    const points = gameContent[gameType].points;
-    
-    // Simulate game completion
-    userPoints += points;
-    updateUserPoints();
-    
-    // Show completion message
-    const gameInterface = document.getElementById('gameInterface');
-    gameInterface.innerHTML = `
-        <div style="text-align: center;">
-            <div style="font-size: 4rem; margin-bottom: 2rem;">🎉</div>
-            <h3 style="color: var(--primary-green);">Congratulations!</h3>
-            <p style="margin: 1rem 0; color: #7f8c8d;">
-                You completed ${gameContent[gameType].title}!
-            </p>
-            <p style="color: var(--primary-green); font-weight: bold; font-size: 1.2rem;">
-                +${points} Points Earned!
-            </p>
-            <div style="margin-top: 2rem;">
-                <button class="btn btn-primary" onclick="openGameModal('${gameType}')">Play Again</button>
-                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin-left: 1rem;">Close</button>
-            </div>
-        </div>
-    `;
-    
-    // Submit score to backend if logged in
-    if (authToken) {
-        submitGameScore(gameType, points);
-    }
-    
-    createConfetti();
-    
-    // Check for achievements
-    if (userPoints >= 1500) {
-        earnAchievement('🎮', 'Gamer', 'Played your first eco-game!');
-    }
-}
-
-// Badge API integration
-async function loadUserBadges() {
-    if (!authToken) return;
-    
-    const result = await makeAPICall('/badges');
-    if (result && result.badges) {
-        // Update local badge system with server data
-        result.badges.forEach(serverBadge => {
-            const badgeKey = serverBadge.name.toLowerCase().replace(' ', '-');
-            if (badgeSystem.badges[badgeKey]) {
-                badgeSystem.badges[badgeKey].currentProgress = serverBadge.progress;
-                badgeSystem.badges[badgeKey].earned = serverBadge.earned;
-            }
-        });
-        updateBadgeDisplay();
-    }
-}
-
-async function updateBadgeProgress(action, value = 1) {
-    if (!authToken) return;
-    
-    const result = await makeAPICall('/badges/progress', 'POST', { action, value });
-    if (result && result.newly_earned && result.newly_earned.length > 0) {
-        // Show newly earned badges
-        result.newly_earned.forEach(badge => {
-            earnAchievement(badge.emoji, badge.name, badge.description);
-        });
-        loadUserBadges(); // Refresh badge display
-    }
-}
-
+// Original functionality (preserved)
 function showAchievements() {
-    alert('🏅 Your Achievements:\n\n✅ RECYCLE HERO - Recycled 15 items\n✅ GREEN STREAK - PLANTED OVER 10 TREES\n🔒 Water Saver - Save 100L of water\n🔒 TREE TROOPER - Plant over 50 trees (12/50)\n🔒ENERGY NINJA - Save unused electic energy for 60 days(18/60)\n🔒 RECYCLING MASTER - Recycle over 50 items(15/50)\n\nComplete more challenges to unlock new badges!');
+    alert('🏅 Your Achievements:\n\n✅ RECYCLE HERO - Recycled 15 items\n✅ GREEN STREAK - 7 days of eco-actions\n🔒 Water Saver - Save 100L of water\n🔒 TREE TROOPER - Plant over 50 trees (12/50)\n🔒 ENERGY NINJA - Save energy for 60 days (18/60)\n🔒 RECYCLING MASTER - Recycle over 50 items (15/50)\n\nComplete more challenges to unlock new badges!');
 }
 
-// Updated badge system with API 
-
-    const badgeSystem = {
-    badges: {
-        'recycle-hero': {
-            name: 'Recycle Hero',
-            emoji: '♻️',
-            description: '100 correct waste-sorting actions',
-            requirement: 100,
-            category: 'recycling',
-            currentProgress: 0,
-            earned: false
-        },
-        'green-streak': {
-            name: 'Green Streak',
-            emoji: '🌱',
-            description: '7 days of continuous eco-actions',
-            requirement: 7,
-            category: 'streak',
-            currentProgress: 0,
-            earned: false
-        },
-        'water-saver': {
-            name: 'Water Saver',
-            emoji: '💧',
-            description: 'Reduce daily water usage significantly',
-            requirement: 50,
-            category: 'water',
-            currentProgress: 0,
-            earned: false
-        },
-        'tree-trooper': {
-            name: 'Tree Trooper',
-            emoji: '🌳',
-            description: 'Plant trees in real world projects',
-            requirement: 5,
-            category: 'trees',
-            currentProgress: 0,
-            earned: false
-        },
-        'energy-ninja': {
-            name: 'Energy Ninja',
-            emoji: '⚡',
-            description: 'Save electricity by reducing usage',
-            requirement: 30,
-            category: 'energy',
-            currentProgress: 0,
-            earned: false
-        },
-        'recycling-hero': {
-            name: 'Recycling Hero',
-            emoji: '♻️',
-            description: 'Consistent recycling habits for 30 days',
-            requirement: 30,
-            category: 'recycling',
-            currentProgress: 0,
-            earned: false
-        }
-    },
-    // Check and award badges with API integration
-    checkBadges: async function(action, value = 1) {
-        // Update progress locally for immediate feedback
-        Object.keys(this.badges).forEach(badgeId => {
-            const badge = this.badges[badgeId];
-            
-            if (!badge.earned && this.shouldUpdateProgress(badge, action)) {
-                badge.currentProgress = Math.min(badge.currentProgress + value, badge.requirement);
-                if (badge.currentProgress >= badge.requirement) {
-                    badge.earned = true;
-                }
-            }
-        });
-        
-        updateBadgeDisplay();
-        
-        // Update server
-        if (authToken) {
-            await updateBadgeProgress(action, value);
-        }
-    },
-    
-    shouldUpdateProgress: function(badge, action) {
-        const actionMapping = {
-            'recycle': ['recycling'],
-            'water_save': ['water'],
-            'plant_tree': ['trees'],
-            'save_energy': ['energy'],
-            'daily_action': ['streak']
-        };
-        
-        return actionMapping[action] && actionMapping[action].includes(badge.category);
-    }
-};
-// Update badge display in the UI
-function updateBadgeDisplay() {
-    const badgesGrid = document.querySelector('.badges-grid');
-    if (!badgesGrid) return;
-    
-    badgesGrid.innerHTML = '';
-    
-    Object.values(badgeSystem.badges).forEach(badge => {
-        const badgeElement = document.createElement('div');
-        badgeElement.className = `badge-item ${badge.earned ? 'earned' : 'locked'}`;
-        badgeElement.title = `${badge.description} (${badge.currentProgress}/${badge.requirement})`;
-        
-        // Add progress indicator for non-earned badges
-        const progressIndicator = badge.earned ? '' : 
-            `<div class="badge-progress">${badge.currentProgress}</div>`;
-        
-        badgeElement.innerHTML = `
-            <div class="badge-emoji">${badge.emoji}</div>
-            <small>${badge.name}</small>
-            ${progressIndicator}
-        `;
-        
-        badgeElement.onclick = () => showBadgeDetails(badge);
-        badgesGrid.appendChild(badgeElement);
-    });
-}
-
-// Show detailed badge information
-function showBadgeDetails(badge) {
-    const status = badge.earned ? 'Earned!' : `Progress: ${badge.currentProgress}/${badge.requirement}`;
-    const progressBar = badge.earned ? '' : 
-        `\n\nProgress: [${'█'.repeat(Math.floor(badge.currentProgress/badge.requirement * 20))}${'░'.repeat(20 - Math.floor(badge.currentProgress/badge.requirement * 20))}] ${Math.floor(badge.currentProgress/badge.requirement * 100)}%`;
-    
-    alert(`${badge.emoji} ${badge.name}\n\n${badge.description}\n\nStatus: ${status}${progressBar}`);
-}
-
-// Card detail functions  
 function showImpactDetails() {
     alert('🌍 Your Environmental Impact:\n\n🌳 Trees Planted: 12\n💨 CO₂ Saved: 45 kg\n🚗 Equivalent to 2 weeks without driving\n\nKeep up the great work!');
 }
@@ -541,159 +1286,11 @@ function showSchoolDetails() {
     alert('🏫 School Performance:\n\nCurrent Rank: #3\nTotal Points: 8,450\nGoal: Top 2 schools\nPoints needed: 1,751\n\nMotivate your classmates to participate more!');
 }
 
-// Updated game functions to track badge progress
-function startGame(gameType) {
-    if (!gameContent[gameType]) return;
-    
-    const points = gameContent[gameType].points;
-    
-    // Simulate game completion
-    userPoints += points;
-    updateUserPoints();
-    
-    // Track badge progress based on game type
-    switch(gameType) {
-        case 'recycle-rush':
-            badgeSystem.checkBadges('recycle', 5);
-            break;
-        case 'water-saver':
-            badgeSystem.checkBadges('water_save', 10);
-            break;
-        case 'carbon-crusher':
-            badgeSystem.checkBadges('save_energy', 5);
-            break;
-        case 'biodiversity-defender':
-            badgeSystem.checkBadges('plant_tree', 1);
-            break;
-    }
-    
-    // Check daily action streak
-    badgeSystem.checkBadges('daily_action');
-    
-    // Show completion message
-    const gameInterface = document.getElementById('gameInterface');
-    gameInterface.innerHTML = `
-        <div style="text-align: center;">
-            <div style="font-size: 4rem; margin-bottom: 2rem;">🎉</div>
-            <h3 style="color: var(--primary-green);">Congratulations!</h3>
-            <p style="margin: 1rem 0; color: #7f8c8d;">
-                You completed ${gameContent[gameType].title}!
-            </p>
-            <p style="color: var(--primary-green); font-weight: bold; font-size: 1.2rem;">
-                +${points} Points Earned!
-            </p>
-            <div style="margin-top: 2rem;">
-                <button class="btn btn-primary" onclick="openGameModal('${gameType}')">Play Again</button>
-                <button class="btn btn-secondary" onclick="closeGameModal()" style="margin-left: 1rem;">Close</button>
-            </div>
-        </div>
-    `;
-    
-    // Submit score to backend if logged in
-    if (authToken) {
-        submitGameScore(gameType, points);
-    }
-    
-    createConfetti();
-}
-
-// Updated photo upload to track recycling badge
-function uploadPhoto() {
-    // Simulate photo upload
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    
-    input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            // Simulate successful upload
-            if (authToken) {
-                submitChallenge('photo-waste-segregation', { 
-                    type: 'photo', 
-                    filename: file.name,
-                    size: file.size
-                });
-            }
-            
-            userPoints += 50;
-            updateUserPoints();
-            
-            // Track recycling progress
-            badgeSystem.checkBadges('recycle', 10);
-            
-            showToast('Photo uploaded successfully! +50 points earned!', 'success');
-            createConfetti();
-        }
-    };
-    
-    input.click();
-}
-
-// Initialize app with badge system
-function initializeApp() {
-    // Load badge progress from storage (fallback)
-    badgeSystem.loadBadgeProgress();
-    updateBadgeDisplay();
-    
-    // Check if user is logged in
-    if (authToken) {
-        getCurrentUser().then(() => {
-            loadUserBadges(); // Load badges from server
-        });
-    }
-    
-    // Load leaderboard
-    loadLeaderboard();
-    
-    // Show welcome message
-    setTimeout(() => {
-        showToast('Welcome to ECO-GREEN! Start earning badges by completing eco-actions!', 'success');
-    }, 1000);
-    
-    // Setup modal click outside to close
-    setupModalEvents();
-}
-
-// Add fallback methods for badge system
-badgeSystem.saveBadgeProgress = function() {
-    localStorage.setItem('badgeProgress', JSON.stringify(this.badges));
-};
-
-badgeSystem.loadBadgeProgress = function() {
-    const saved = localStorage.getItem('badgeProgress');
-    if (saved) {
-        try {
-            const savedBadges = JSON.parse(saved);
-            Object.keys(savedBadges).forEach(badgeId => {
-                if (this.badges[badgeId]) {
-                    this.badges[badgeId].currentProgress = savedBadges[badgeId].currentProgress || 0;
-                    this.badges[badgeId].earned = savedBadges[badgeId].earned || false;
-                }
-            });
-        } catch (e) {
-            console.warn('Failed to load saved badge progress:', e);
-        }
-    }
-};
-
 function showResources() {
     alert('📚 Eco Resources:\n\n• Climate Change Facts\n• Renewable Energy Guide\n• Waste Management Tips\n• Carbon Footprint Calculator\n• Local Environmental Groups\n• Green Living Blog\n\nVisit our resource center for detailed guides!');
 }
 
-// Quiz and photo functions
-function startQuiz() {
-    if (authToken) {
-        submitChallenge('quiz-climate-basics', { type: 'quiz', completed: true });
-    }
-    
-    userPoints += 30;
-    updateUserPoints();
-    showToast('Quiz completed! +30 points earned!', 'success');
-}
-
 function uploadPhoto() {
-    // Simulate photo upload
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -701,17 +1298,7 @@ function uploadPhoto() {
     input.onchange = function(e) {
         const file = e.target.files[0];
         if (file) {
-            // Simulate successful upload
-            if (authToken) {
-                submitChallenge('photo-waste-segregation', { 
-                    type: 'photo', 
-                    filename: file.name,
-                    size: file.size
-                });
-            }
-            
-            userPoints += 50;
-            updateUserPoints();
+            awardPoints(50);
             showToast('Photo uploaded successfully! +50 points earned!', 'success');
             createConfetti();
         }
@@ -720,59 +1307,13 @@ function uploadPhoto() {
     input.click();
 }
 
-// Floating action button
 function showEcoTips() {
     const randomTip = ecoTips[Math.floor(Math.random() * ecoTips.length)];
     showToast(randomTip, 'success');
 }
 
-// UI Update functions
-function updateUserDisplay(user) {
-    if (user) {
-        document.getElementById('userPoints').textContent = user.points.toLocaleString();
-        document.getElementById('streak').textContent = user.streak;
-        userPoints = user.points;
-        streak = user.streak;
-    }
-}
-
-function updateUserPoints(newPoints = null) {
-    if (newPoints !== null) {
-        userPoints = newPoints;
-    }
-    document.getElementById('userPoints').textContent = userPoints.toLocaleString();
-}
-
-function updateLeaderboardDisplay(schools) {
-    const leaderboard = document.getElementById('leaderboard');
-    const existingItems = leaderboard.querySelectorAll('.leaderboard-item');
-    
-    // Remove existing items except header
-    existingItems.forEach(item => item.remove());
-    
-    schools.forEach((school, index) => {
-        const item = document.createElement('div');
-        item.className = 'leaderboard-item';
-        
-        if (school.name.includes('(You)')) {
-            item.style.background = 'linear-gradient(135deg, #667eea20 0%, #764ba220 100%)';
-        }
-        
-        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-        
-        item.innerHTML = `
-            <div class="rank ${rankClass}">${index + 1}</div>
-            <span class="school-name">${school.name}</span>
-            <span class="school-points">${school.total_points.toLocaleString()} pts</span>
-        `;
-        
-        leaderboard.appendChild(item);
-    });
-}
-
-// Utility functions
+// UI Utility Functions
 function showToast(message, type = 'success') {
-    // Remove existing toasts
     const existingToasts = document.querySelectorAll('.toast');
     existingToasts.forEach(toast => toast.remove());
     
@@ -809,68 +1350,29 @@ function createConfetti() {
     }
 }
 
-function earnAchievement(icon, title, description) {
-    const badge = document.createElement('div');
-    badge.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        z-index: 3000;
-        text-align: center;
-        animation: badgePopup 0.5s;
-    `;
-    badge.innerHTML = `
-        <div style="font-size: 4rem; margin-bottom: 1rem; animation: spin 1s;">${icon}</div>
-        <h3>${title}</h3>
-        <p>${description}</p>
-        <button class="btn btn-primary" onclick="this.parentElement.remove()" style="margin-top: 1rem;">Awesome!</button>
-    `;
-    document.body.appendChild(badge);
+// Event handlers
+function setupEventHandlers() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
     
-    setTimeout(() => {
-        if (badge.parentNode) {
-            badge.remove();
-        }
-    }, 5000);
-}
-
-// Initialize app
-function initializeApp() {
-    // Check if user is logged in
-    if (authToken) {
-        getCurrentUser();
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
     }
     
-    // Load leaderboard
-    loadLeaderboard();
+    const gameModal = document.getElementById('gameModal');
+    const loginModal = document.getElementById('loginModal');
     
-    // Show welcome message
-    setTimeout(() => {
-        showToast('Welcome to ECO-GREEN! New eco-games are available! 🎮', 'success');
-    }, 1000);
-    
-    // Setup modal click outside to close
-    setupModalEvents();
-}
-
-// Event handlers
-function setupModalEvents() {
-    // Close modal when clicking outside
-    const modal = document.getElementById('gameModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
+    if (gameModal) {
+        gameModal.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeGameModal();
             }
         });
     }
     
-    // ESC key to close modal
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeGameModal();
@@ -878,104 +1380,18 @@ function setupModalEvents() {
     });
 }
 
-// Logout function
-function logout() {
-    authToken = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    // Reset UI to default state
-    document.getElementById('userPoints').textContent = '0';
-    document.getElementById('streak').textContent = '0';
-    
-    showToast('Logged out successfully', 'success');
-}
-
-// Auto-save progress (runs every 30 seconds if logged in)
-function autoSaveProgress() {
-    if (authToken) {
-        // Update user's last active time
-        makeAPICall('/auth/ping', 'POST');
+// Add CSS for animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
     }
-}
+`;
+document.head.appendChild(style);
 
-// Run initialization when DOM is loaded
+// Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeApp);
 
-// Auto-save interval
-setInterval(autoSaveProgress, 30000);
-
-// Achievement checking functions
-function checkAchievements() {
-    const achievements = [
-        { id: 'first_game', condition: () => userPoints >= 1000, icon: '🎮', title: 'First Steps', description: 'Played your first game!' },
-        { id: 'eco_warrior', condition: () => userPoints >= 2000, icon: '⚔️', title: 'Eco Warrior', description: 'Earned 2000+ points!' },
-        { id: 'green_champion', condition: () => userPoints >= 5000, icon: '🏆', title: 'Green Champion', description: 'Reached 5000 points!' }
-    ];
-    
-    achievements.forEach(achievement => {
-        if (achievement.condition() && !hasAchievement(achievement.id)) {
-            earnAchievement(achievement.icon, achievement.title, achievement.description);
-            markAchievementEarned(achievement.id);
-        }
-    });
-}
-
-function hasAchievement(achievementId) {
-    const earnedAchievements = JSON.parse(localStorage.getItem('achievements') || '[]');
-    return earnedAchievements.includes(achievementId);
-}
-
-function markAchievementEarned(achievementId) {
-    const earnedAchievements = JSON.parse(localStorage.getItem('achievements') || '[]');
-    if (!earnedAchievements.includes(achievementId)) {
-        earnedAchievements.push(achievementId);
-        localStorage.setItem('achievements', JSON.stringify(earnedAchievements));
-    }
-}
-
-// Performance optimization - throttled scroll events
-let scrollTimeout;
-function throttledScrollHandler() {
-    if (scrollTimeout) return;
-    
-    scrollTimeout = setTimeout(() => {
-        // Add any scroll-based animations or effects here
-        scrollTimeout = null;
-    }, 16); // ~60fps
-}
-
-window.addEventListener('scroll', throttledScrollHandler);
-
-// Error handling for failed API calls
-window.addEventListener('error', function(e) {
-    console.error('JavaScript Error:', e.error);
-    if (e.error.message.includes('fetch')) {
-        showToast('Connection error. Please check your internet connection.', 'error');
-    }
-});
-
-// Service worker registration for offline support (future enhancement)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // navigator.serviceWorker.register('/sw.js')
-        //     .then(function(registration) {
-        //         console.log('ServiceWorker registration successful');
-        //     })
-        //     .catch(function(error) {
-        //         console.log('ServiceWorker registration failed');
-        //     });
-    });
-}
-
-// Export functions for potential module use
-window.EcoGreen = {
-    login,
-    register,
-    logout,
-    startGame,
-    submitGameScore,
-    loadLeaderboard,
-    showToast,
-    scrollToSection
-};
+console.log('EDU-GREEN Complete Game System Loaded!');
